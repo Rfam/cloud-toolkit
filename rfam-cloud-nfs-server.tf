@@ -48,7 +48,7 @@ variable "ssh_user"{
 
 ## create a new volume
 resource "openstack_blockstorage_volume_v2" "nfs_vol" {
-  name = "test_nfs_vol"
+  name = "nfs_vol"
   size = 10
 }
 
