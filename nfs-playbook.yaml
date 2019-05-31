@@ -1,10 +1,12 @@
 - name: NFS server installation and setup
   hosts: "{{ host_ip }}" # the public ip of the host to apply the ansible configuration
+  vars:
+    ansible_python_interpreter: "/usr/bin/python3" # set ansible interpreter to python3
   become: true
   gather_facts: no
   user: ubuntu
   
-  tasks:
+  tasks: 
     - name: Update /etc/hostname file
       lineinfile:
         dest: /etc/hostname
@@ -18,10 +20,16 @@
         dest: /etc/hosts 
         regexp: '^127\.0\.0\.1 localhost'
         insertafter: '^127\.0\.0\.1 localhost'
-        line: '127.0.0.1 {{ hostname }}'
+        line: '127.0.0.1 localhost {{ hostname }}'
         owner: root
         group: root
         mode: 0644
+        state: present
+
+    - name: Upgrade apt
+      apt:
+        upgrade: yes
+        update_cache: yes
         state: present
 
     - name: Install nfs on the compute instance
@@ -30,9 +38,9 @@
         state: present
       vars:
         packages:
+        - python3-pip
         - nfs-kernel-server
         - nfs-common
-        - python-pip
 
     - name: Create the export nfs directory
       file:
