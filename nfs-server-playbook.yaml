@@ -10,7 +10,7 @@
     - name: Update /etc/hostname file
       lineinfile:
         dest: /etc/hostname
-        line: "{{ hostname }}"
+        line: nfs_server
         owner: root
         group: root
         state: present
@@ -20,7 +20,7 @@
         dest: /etc/hosts 
         regexp: '^127\.0\.0\.1 localhost'
         insertafter: '^127\.0\.0\.1 localhost'
-        line: '127.0.0.1 {{ hostname }}'
+        line: '127.0.0.1 nfs_server'
         owner: root
         group: root
         mode: 0644
