@@ -1,5 +1,5 @@
 - name: NFS server installation and setup
-  hosts: "{{ host_ip }}" # the public ip of the host to apply the ansible configuration
+  hosts: all # the public ip of the host to apply the ansible configuration
   vars:
     ansible_python_interpreter: "/usr/bin/python3" # set ansible interpreter to python3
   become: true
