@@ -20,7 +20,7 @@
         dest: /etc/hosts 
         regexp: '^127\.0\.0\.1 localhost'
         insertafter: '^127\.0\.0\.1 localhost'
-        line: '127.0.0.1 localhost {{ hostname }}'
+        line: '127.0.0.1 {{ hostname }}'
         owner: root
         group: root
         mode: 0644
@@ -40,7 +40,6 @@
         packages:
         - python3-pip
         - nfs-kernel-server
-        - nfs-common
 
     - name: Create the export nfs directory
       file:
@@ -58,8 +57,8 @@
       mount:
         path: /nfs
         src: /dev/vdb
-        fstype: iso9660
-        state: present
+        fstype: xfs
+        state: mounted
 
     # 3. change dir permissions
     - name: Make nfs directory accessible to all
@@ -87,9 +86,7 @@
 
 # 5. export the /nfs directory as sudo - sudo exportfs -a
 # the above command isn't necessary 
-
     - name: restart nfs server
       service: 
         name: nfs-kernel-server 
         state: restarted
-
