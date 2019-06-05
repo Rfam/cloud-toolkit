@@ -1,4 +1,4 @@
-- name: NFS client installation and setup
+- name: NFS client installation and nfs server mount
   hosts: "{{ hosts }}"
   vars:
     ansible_python_interpreter: "/usr/bin/python3" # set ansible interpreter to python3
