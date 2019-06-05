@@ -1,0 +1,39 @@
+- name: NFS client installation and setup
+  hosts: "{{ hosts }}"
+  vars:
+    ansible_python_interpreter: "/usr/bin/python3" # set ansible interpreter to python3
+  become: true
+  gather_facts: no
+  user: "{{ user }}" # pass this as a parameter
+
+  tasks:
+    # - name: Install nfs on the client instance (Ubuntu or Debian)
+    #   action: apt pkg=nfs-common state=present
+    #   when: (ansible_facts['distribution'] == "Ubuntu")
+
+    # - name: Install nfs on the client instance (CentOS)
+    #   action: yum pkg=nfs-utils state=present
+    #   when: (ansible_facts['distribution'] == "CentOS")
+    #   tags:
+    #     - nfs
+    - name: Install nfs packages on client machine
+      apt:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+        - nfs-common
+
+    - name: Create an nfs directory where to mount nfs server dir
+      file:
+        path: /test
+        state: directory
+        mode: "u=r,g=r,o=rwx" # might need to change these privileges
+        recurse: yes
+
+    - name: Mount nfs server directory to client location
+      mount:
+        path: /test
+        src: "{{ nfs_server_ip }}:/nfs"
+        fstype: nfs
+        state: mounted
