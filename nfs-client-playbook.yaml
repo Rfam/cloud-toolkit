@@ -1,7 +1,10 @@
+
 - name: NFS client installation and nfs server mount
-  hosts: "{{ hosts }}"
   vars:
     ansible_python_interpreter: "/usr/bin/python3" # set ansible interpreter to python3
+  vars_files:
+    - ansible_vars.yaml
+  hosts: "{{ hosts }}"
   become: true
   gather_facts: no
   user: "{{ user }}" # pass this as a parameter
@@ -26,14 +29,14 @@
 
     - name: Create an nfs directory where to mount nfs server dir
       file:
-        path: /nfs
+        path: "{{ mount_dest_path }}"
         state: directory
         mode: "u=r,g=r,o=rwx" # might need to change these privileges
         recurse: yes
 
     - name: Mount nfs server directory to client location
       mount:
-        path: /nfs
+        path: "{{ mount_dest_path }}"
         src: "{{ nfs_server_ip }}:/nfs"
         fstype: nfs
         state: mounted
