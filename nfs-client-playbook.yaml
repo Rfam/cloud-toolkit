@@ -26,14 +26,14 @@
 
     - name: Create an nfs directory where to mount nfs server dir
       file:
-        path: /test
+        path: /nfs
         state: directory
         mode: "u=r,g=r,o=rwx" # might need to change these privileges
         recurse: yes
 
     - name: Mount nfs server directory to client location
       mount:
-        path: /test
+        path: /nfs
         src: "{{ nfs_server_ip }}:/nfs"
         fstype: nfs
         state: mounted
