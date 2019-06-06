@@ -39,8 +39,8 @@ variable "volume_size" {
 }
 
 ## create a new volume
-resource "openstack_blockstorage_volume_v2" "nfs_vol" {
-  name = "nfs_vol"
+resource "openstack_blockstorage_volume_v2" "nfs_volume" {
+  name = "nfs_volume"
   size = "${var.volume_size}"
 }
 
