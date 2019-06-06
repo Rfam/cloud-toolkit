@@ -12,11 +12,11 @@
   tasks:
     - name: Install nfs on the client instance (Ubuntu or Debian)
       command: apt-get install nfs-common 
-      when: (os_flavour == "Ubuntu" or os_flavour == "Debian")
+      when: (os_flavour == "Ubuntu" or os_flavour == "Debian" or os_flavour == "ubuntu" or os_flavour == "debian")
 
     - name: Install nfs on the client instance (CentOS)
       command: yum install nfs-utils nfs-utils-lib
-      when: os_flavour == "CentOS"
+      when: (os_flavour == "CentOS" or os_flavour == "centOS")
 
     - name: Create an nfs directory where to mount nfs server dir
       file:
