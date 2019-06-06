@@ -30,18 +30,21 @@ variable "floating_ip_pool" {
 	default = ""
 }
 
-variable "ssh_user"{
+variable "ssh_user" {
 	default = "ubuntu"
+}
+
+variable "volume_size" {
+  default = 10
 }
 
 ## create a new volume
 resource "openstack_blockstorage_volume_v2" "nfs_vol" {
   name = "nfs_vol"
-  size = 10
+  size = "${var.volume_size}"
 }
 
-###############------------INSTANCES-----------###############
-
+#---------------------- Instance Creation --------------------
 
 # create a new openstack instance
 resource "openstack_compute_instance_v2" "nfs_server" {
@@ -50,11 +53,6 @@ resource "openstack_compute_instance_v2" "nfs_server" {
   flavor_name       = "${var.flavor_name}" 
   key_pair          = "${var.keypair}"
   security_groups   = ["${var.security_group}"]
-
-  # asign instance to a network
-  #connection {
-  #private_key = "./ssh_key"
-  #}
 
   # the network to be attached to the instance
   network {
@@ -78,23 +76,4 @@ resource "openstack_compute_floatingip_associate_v2" "nfs_server_floating_ip" {
   floating_ip = "${openstack_networking_floatingip_v2.nfs_server_floating_ip.address}"
   instance_id = "${openstack_compute_instance_v2.nfs_server.id}"
 }
-
-# call ansible to install the nfs server - Currently not working
-
- # provisioner "remote-exec" {
- #    inline = ["sudo dnf -y install python"]
-
- #    connection {
- #      type        = "ssh"
- #      user        = "ubuntu"
- #      private_key = "./ssh_key" #"${file(var.ssh_key_private)}"
- #    }
- #  }
-
- #    provisioner "local-exec" {
- #    command = "ansible-playbook -i '${self.public_ip}' --private-key ssh_key nfs-playbook.yaml --extra-vars host_ip='${self.public_ip}' hostname='${self.nfs_server.name}' network_ip='${self.nfs_server.network.ip}'" 
- #  }
-
-
-
 
