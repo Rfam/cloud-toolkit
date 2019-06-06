@@ -10,22 +10,14 @@
   user: "{{ user }}" # pass this as a parameter
 
   tasks:
-    # - name: Install nfs on the client instance (Ubuntu or Debian)
-    #   action: apt pkg=nfs-common state=present
-    #   when: (ansible_facts['distribution'] == "Ubuntu")
 
-    # - name: Install nfs on the client instance (CentOS)
-    #   action: yum pkg=nfs-utils state=present
-    #   when: (ansible_facts['distribution'] == "CentOS")
-    #   tags:
-    #     - nfs
-    - name: Install nfs packages on client machine
-      apt:
-        name: "{{ packages }}"
-        state: present
-      vars:
-        packages:
-        - nfs-common
+    - name: Install nfs on the client instance (Ubuntu or Debian)
+      command: apt-get install nfs-common 
+      when: (os_flavour == "Ubuntu" or os_flavour == "Debian")
+
+    - name: Install nfs on the client instance (CentOS)
+      command: yum install nfs-utils nfs-utils-lib
+      when: os_flavour == "CentOS"
 
     - name: Create an nfs directory where to mount nfs server dir
       file:
