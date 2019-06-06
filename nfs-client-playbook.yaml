@@ -3,7 +3,7 @@
   vars:
     ansible_python_interpreter: "/usr/bin/python3" # set ansible interpreter to python3
   vars_files:
-    - ansible_vars.yaml
+    - ansible_vars.yaml # ansible variables to install nfs client
   hosts: "{{ hosts }}"
   become: true
   gather_facts: no
