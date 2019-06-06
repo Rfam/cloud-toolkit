@@ -10,7 +10,6 @@
   user: "{{ user }}" # pass this as a parameter
 
   tasks:
-
     - name: Install nfs on the client instance (Ubuntu or Debian)
       command: apt-get install nfs-common 
       when: (os_flavour == "Ubuntu" or os_flavour == "Debian")
