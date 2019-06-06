@@ -34,18 +34,6 @@ variable "ssh_user"{
 	default = "ubuntu"
 }
 
-#resource "openstack_images_image_v2" "ubuntu_xenial" {
-#  name   = "ubuntu_xenial"
-#  image_source_url = "https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-disk1.img"
-#  container_format = "bare"
-#  disk_format = "qcow2"
-
-#  properties = {
-#    key = "value"
-#  }
-#}
-
-
 ## create a new volume
 resource "openstack_blockstorage_volume_v2" "nfs_vol" {
   name = "nfs_vol"
@@ -57,7 +45,7 @@ resource "openstack_blockstorage_volume_v2" "nfs_vol" {
 
 # create a new openstack instance
 resource "openstack_compute_instance_v2" "nfs_server" {
-  name              = "test_nfs_server"
+  name              = "nfs_server"
   image_name        = "${var.os_image}"
   flavor_name       = "${var.flavor_name}" 
   key_pair          = "${var.keypair}"
@@ -90,5 +78,23 @@ resource "openstack_compute_floatingip_associate_v2" "nfs_server_floating_ip" {
   floating_ip = "${openstack_networking_floatingip_v2.nfs_server_floating_ip.address}"
   instance_id = "${openstack_compute_instance_v2.nfs_server.id}"
 }
+
+# call ansible to install the nfs server - Currently not working
+
+ # provisioner "remote-exec" {
+ #    inline = ["sudo dnf -y install python"]
+
+ #    connection {
+ #      type        = "ssh"
+ #      user        = "ubuntu"
+ #      private_key = "./ssh_key" #"${file(var.ssh_key_private)}"
+ #    }
+ #  }
+
+ #    provisioner "local-exec" {
+ #    command = "ansible-playbook -i '${self.public_ip}' --private-key ssh_key nfs-playbook.yaml --extra-vars host_ip='${self.public_ip}' hostname='${self.nfs_server.name}' network_ip='${self.nfs_server.network.ip}'" 
+ #  }
+
+
 
 
