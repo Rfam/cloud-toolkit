@@ -21,7 +21,7 @@ __3. Create an inventory using the terraform state file:__
 
 __4. Call ansible nfs-server playbook to install and setup nfs server on the new instance:__
 
-`ansible-playbook -i inventory nfs-server-playbook.yaml --key-file ssh_key`
+`ansible-playbook -i inventory nfs-server-playbook.yaml --key-file ssh_key --extra-vars "network_ip=subnet_ip"`
 
 __5. Use your client machine inventory to install and setup nfs client using ansible playbook__
 
