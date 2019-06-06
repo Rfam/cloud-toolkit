@@ -11,19 +11,23 @@ __1. Initialize terraform:__
 
 `terraform init`
 
-__2. Deploy nfs instance using the terraform configuration nfs:__
+__2. Update the sample vars files:__
+  * sample.nfs-server.tfvars
+  * sample.ansible_vars.yaml
+
+__3. Deploy nfs instance using the terraform configuration nfs:__
 
 `terraform apply -var-file nfs-server.tfvars`
 
-__3. Create an inventory using the terraform state file:__
+__4. Create an inventory using the terraform state file:__
 
 `terraform-inventory -inventory terraform.tfstate > inventory`
 
-__4. Call ansible nfs-server playbook to install and setup nfs server on the new instance:__
+__5. Call ansible nfs-server playbook to install and setup nfs server on the new instance:__
 
 `ansible-playbook -i inventory nfs-server-playbook.yaml --key-file ssh_key --extra-vars "network_ip=subnet_ip"`
 
-__5. Use your client machine inventory to install and setup nfs client using ansible playbook__
+__6. Use your client machine inventory to install and setup nfs client using ansible playbook__
 
 `ansible-playbook -i /path/to/client-inventory nfs-client-playbook.yaml --key-file ssh_key`
 
