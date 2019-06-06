@@ -63,7 +63,7 @@ resource "openstack_compute_instance_v2" "nfs_server" {
 # attach volume to instance
 resource "openstack_compute_volume_attach_v2" "attached" {
   instance_id = "${openstack_compute_instance_v2.nfs_server.id}"
-  volume_id = "${openstack_blockstorage_volume_v2.nfs_vol.id}"
+  volume_id = "${openstack_blockstorage_volume_v2.nfs_volume.id}"
 }
 
 # fetch floating ip from floating ip pool
