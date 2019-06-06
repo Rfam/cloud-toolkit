@@ -1,6 +1,11 @@
 # NFS provisioning with terraform/ansible
 Terraform configuration to deploy nfs server on cloud infrastructures. This assumes that you have an existing cluster or client instance up and running. 
 
+## Requirements
+1. terraform
+2. terraform-inventory
+3. ansible
+
 ## Steps:
 __1. Initialize terraform:__
 
