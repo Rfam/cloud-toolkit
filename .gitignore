@@ -1,2 +1,4 @@
 *.tfstate*
 nfs/*.tfstate*
+ssh_key
+nfs/ssh_key
