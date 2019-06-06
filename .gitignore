@@ -2,3 +2,4 @@
 nfs/*.tfstate*
 ssh_key
 nfs/ssh_key
+nfs/ansible_vars.yaml
