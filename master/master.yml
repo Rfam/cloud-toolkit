@@ -1,0 +1,121 @@
+- hosts: master_floating_ip
+  gather_facts: Yes
+  remote_user: ubuntu
+  become: true
+  become_method: sudo
+  vars:
+    ansible_ssh_private_key_file: "ssh_key"
+  tasks:
+    - name: Create directory
+      file:
+        path: /home/ubuntu/code
+        state: directory
+        owner: ubuntu
+        group: ubuntu
+        mode: 0755
+      tags: [ code ]
+
+    - name: Delete rfam-family-pipeline
+      file:
+        path: /home/ubuntu/code/rfam-family-pipeline
+        state: absent
+      ignore_errors: yes
+      tags: [ code ]
+
+    - name: Clone the rfam-family-pipeline repo
+      shell:
+        chdir: /home/ubuntu/code
+        cmd: git clone https://github.com/Rfam/rfam-family-pipeline.git
+      tags: [ code ]
+
+    - name: Add cronjob
+      cron:
+        name: "Set-up cronjob to cleanup k8s resources"
+        user: "ubuntu"
+        minute: "*"
+        hour: "*"
+        day: "*"
+        month: "*"
+        weekday: "*"
+        job: "kubectl delete pods --selector=tier=backend --field-selector status.phase=Succeeded"
+      tags: [ cronjob ]
+
+    - name: Add second cronjob
+      cron:
+        name: "Run k8s_job_sweeper.py"
+        user: "ubuntu"
+        minute: "*"
+        hour: "*"
+        day: "*"
+        month: "*"
+        weekday: "*"
+        job: "python /home/ubuntu/code/rfam-family-pipeline/kubernetes/k8s_job_sweeper.py"
+      tags: [ cronjob ]
+
+    - name: Create symbolic link
+      file:
+        src: "/home/ubuntu/code/rfam-family-pipeline/kubernetes/python_code/scripts/rfcloud.py"
+        dest: "/usr/bin/rfcloud"
+        state: link
+      tags: [ sym-link ]
+
+    - name: Setup k8s environment
+      blockinfile:
+        path: /etc/environment
+        block: |
+          PYTHONPATH="PYTHONPATH=$PYTHONPATH:/home/ubuntu/code/rfam-family-pipeline/kubernetes/python_code"
+          KUBECONFIG="/etc/kubernetes/admin.conf"
+      tags: [ k8-env ]
+
+    - name: Pull rfam-cloud
+      shell: docker pull ikalvari/rfam-cloud:kubes
+      tags: [ docker ]
+
+    - name: Changing permission in /etc/update-motd.d
+      file: path={{ item }} owner=root group=root mode=0644
+      with_items:
+        - /etc/update-motd.d/51-cloudguest
+        - /etc/update-motd.d/90-updates-available
+        - /etc/update-motd.d/91-release-upgrade
+        - /etc/update-motd.d/97-overlayroot
+        - /etc/update-motd.d/98-fsck-at-reboot
+        - /etc/update-motd.d/98-reboot-required
+      tags: [ perm ]
+
+    - name: Display the Rfam logo
+      blockinfile:
+        path: /etc/update-motd.d/00-header
+        block: |
+          printf "\n\n  ____    __\n"
+          printf " |  _ \\  / _|  __ _  _ __ ___\n"
+          printf " | |_) || |_  / _\` || \`_ \` _ \\"
+          printf "\n |  _ < |  _|| (_| || | | | | |\n"
+          printf " |_| \\_\\|_|   \\__,_||_| |_| |_|\n"
+          printf "\n\n Welcome to the Rfam cloud curation pipeline!\n\n"
+      tags: [ message ]
+
+    - name: Delete 10-help-text
+      file:
+        path: /etc/update-motd.d/10-help-text
+        state: absent
+      ignore_errors: yes
+      tags: [ message ]
+
+    - name: Create 10-help-text
+      file:
+        path: /etc/update-motd.d/10-help-text
+        state: touch
+        mode: u=rwx,g=rx,o=rx
+        owner: root
+        group: root
+      tags: [ message ]
+
+    - name: Display help urls
+      blockinfile:
+        path: /etc/update-motd.d/10-help-text
+        block: |
+          printf "\n"
+          printf " * Documentation:  https://docs.rfam.org/en/latest/rfam-cloud.html\n"
+          #printf " * Management:     https://landscape.canonical.com\n"
+          printf " * Support:        https://docs.rfam.org/en/latest/contact-us.html\n\n\n\n"
+      tags: [ message ]
