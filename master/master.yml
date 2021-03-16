@@ -6,6 +6,25 @@
   vars:
     ansible_ssh_private_key_file: "ssh_key"
   tasks:
+    - name: Update apt
+      apt:
+        update_cache: yes
+        state: present
+      tags: [ update ]
+
+    - name: Performs an aptitude safe-upgrade
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400
+      tags: [ update ]
+
+    # TODO: perhaps link the nfs to an edge node?
+    - name: Install the package "nfs-common"
+      apt:
+        name: nfs-common
+      tags: [ update ]
+
     - name: Create directory
       file:
         path: /home/ubuntu/code
