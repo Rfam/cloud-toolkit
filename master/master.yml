@@ -68,7 +68,7 @@
       tags: [ k8-env ]
 
     - name: Pull rfam-cloud
-      shell: docker pull ikalvari/rfam-cloud:kubes
+      shell: docker pull rfam/cloud:kubes
       tags: [ docker ]
 
     # TODO: Review this item after switching to signed certificates
