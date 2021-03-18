@@ -122,3 +122,16 @@
           #printf " * Management:     https://landscape.canonical.com\n"
           printf " * Support:        https://docs.rfam.org/en/latest/contact-us.html\n\n\n\n"
       tags: [ message ]
+
+    - name: Insert "Match User" configuration block in /etc/ssh/sshd_config
+      blockinfile:
+        path: /etc/ssh/sshd_config
+        block: |
+          Match User ubuntu
+          PasswordAuthentication yes
+          KbdInteractiveAuthentication yes
+      tags: [ ssh ]
+
+    - name: Restart sshd
+      command: service ssh restart
+      tags: [ ssh ]
