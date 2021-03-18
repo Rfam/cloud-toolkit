@@ -6,19 +6,6 @@
   vars:
     ansible_ssh_private_key_file: "ssh_key"
   tasks:
-    - name: Update and upgrade apt packages
-      apt:
-        upgrade: yes
-        update_cache: yes
-        cache_valid_time: 86400
-      tags: [ update ]
-
-    # TODO: perhaps link the nfs to an edge node?
-    - name: Install the package "nfs-common"
-      apt:
-        name: nfs-common
-      tags: [ update ]
-
     - name: Create directory
       file:
         path: /home/ubuntu/code
@@ -95,6 +82,13 @@
         - /etc/update-motd.d/98-reboot-required
       tags: [ perm ]
 
+    - name: Remove welcome message
+      lineinfile:
+        dest: /etc/update-motd.d/00-header
+        state: absent
+        regexp: "^printf"
+      tags: [ message ]
+
     - name: Display the Rfam logo
       blockinfile:
         path: /etc/update-motd.d/00-header
@@ -107,23 +101,14 @@
           printf "\n\n Welcome to the Rfam cloud curation pipeline!\n\n"
       tags: [ message ]
 
-    - name: Delete 10-help-text
-      file:
-        path: /etc/update-motd.d/10-help-text
+    - name: Remove urls
+      lineinfile:
+        dest: /etc/update-motd.d/10-help-text
         state: absent
-      ignore_errors: yes
+        regexp: "^printf"
       tags: [ message ]
 
-    - name: Create 10-help-text
-      file:
-        path: /etc/update-motd.d/10-help-text
-        state: touch
-        mode: u=rwx,g=rx,o=rx
-        owner: root
-        group: root
-      tags: [ message ]
-
-    - name: Display help urls
+    - name: Add help urls
       blockinfile:
         path: /etc/update-motd.d/10-help-text
         block: |
