@@ -71,6 +71,7 @@
       shell: docker pull ikalvari/rfam-cloud:kubes
       tags: [ docker ]
 
+    # TODO: Review this item after switching to signed certificates
     - name: Changing permission of "/etc/kubernetes/admin.conf"
       file: dest=/etc/kubernetes/admin.conf mode=0755
       tags: [ perm ]
