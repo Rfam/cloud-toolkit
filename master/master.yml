@@ -6,13 +6,7 @@
   vars:
     ansible_ssh_private_key_file: "ssh_key"
   tasks:
-    - name: Update apt
-      apt:
-        update_cache: yes
-        state: present
-      tags: [ update ]
-
-    - name: Performs an aptitude safe-upgrade
+    - name: Update and upgrade apt packages
       apt:
         upgrade: yes
         update_cache: yes
