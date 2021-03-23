@@ -7,9 +7,6 @@ flavor_name = ""
 # keypair if keypair does not exist, create it
 keypair = ""
 
-# assumes a pre-configured security group. Create if it doesn't exist
-security_group = ""
-
 # the network to be attached to the instance
 network_name = ""
 
