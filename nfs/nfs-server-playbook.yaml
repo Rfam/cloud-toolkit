@@ -1,7 +1,8 @@
 - name: NFS server installation and setup
-  hosts: all # the public ip of the host to apply the ansible configuration
+  hosts: nfs_server_floating_ip # the public ip of the host to apply the ansible configuration
   vars:
     ansible_python_interpreter: "/usr/bin/python3" # set ansible interpreter to python3
+    network_ip: 10.0.0.0/24
   become: true
   gather_facts: no
   user: ubuntu
@@ -78,7 +79,7 @@
         dest: /etc/exports 
         regexp: '^#*'
         insertafter: '^#*'
-        line: "/nfs {{ network_ip }}(rw,sync,fsid=0,crossmnt,no_subtree_check,no_root_squash)"
+        line: "/nfs {{ network_ip }}(rw,sync,no_subtree_check)"
         owner: root
         group: root
         mode: 0644
