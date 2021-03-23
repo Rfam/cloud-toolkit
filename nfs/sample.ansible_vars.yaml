@@ -1,5 +1,5 @@
 hosts: machines_to_install_to # e.g. all
 user: user_name # e.g. ubuntu
-nfs_server_ip: nfs_server_ip
+nfs_server_ip: nfs_server_ip # private IP
 mount_dest_path: /location/to/mount/directory
 os_flavour: Ubuntu # other CentOS, Debian 
